@@ -11,19 +11,19 @@ import (
 )
 
 var (
-	vCpuType                 = proto.CommodityDTO_VCPU
-	vMemType                 = proto.CommodityDTO_VMEM
-	vCpuRequestType          = proto.CommodityDTO_VCPU_REQUEST
-	vMemRequestType          = proto.CommodityDTO_VMEM_REQUEST
-	cpuAllocationType        = proto.CommodityDTO_CPU_ALLOCATION
-	memAllocationType        = proto.CommodityDTO_MEM_ALLOCATION
-	cpuRequestAllocationType = proto.CommodityDTO_CPU_REQUEST_ALLOCATION
-	memRequestAllocationType = proto.CommodityDTO_MEM_REQUEST_ALLOCATION
-	clusterType              = proto.CommodityDTO_CLUSTER
-	vmPMAccessType           = proto.CommodityDTO_VMPM_ACCESS
-	appCommType              = proto.CommodityDTO_APPLICATION
-	transactionType          = proto.CommodityDTO_TRANSACTION
-	respTimeType             = proto.CommodityDTO_RESPONSE_TIME
+	vCpuType            = proto.CommodityDTO_VCPU
+	vMemType            = proto.CommodityDTO_VMEM
+	vCpuRequestType     = proto.CommodityDTO_VCPU_REQUEST
+	vMemRequestType     = proto.CommodityDTO_VMEM_REQUEST
+	cpuQuotaType        = proto.CommodityDTO_VCPU_QUOTA
+	memQuotaType        = proto.CommodityDTO_VMEM_QUOTA
+	cpuRequestQuotaType = proto.CommodityDTO_VCPU_REQUEST_QUOTA
+	memRequestQuotaType = proto.CommodityDTO_VMEM_REQUEST_QUOTA
+	clusterType         = proto.CommodityDTO_CLUSTER
+	vmPMAccessType      = proto.CommodityDTO_VMPM_ACCESS
+	appCommType         = proto.CommodityDTO_APPLICATION
+	transactionType     = proto.CommodityDTO_TRANSACTION
+	respTimeType        = proto.CommodityDTO_RESPONSE_TIME
 
 	fakeKey = "fake"
 
@@ -31,10 +31,10 @@ var (
 	vMemTemplateComm                        = &proto.TemplateCommodity{CommodityType: &vMemType}
 	vCpuRequestTemplateComm                 = &proto.TemplateCommodity{CommodityType: &vCpuRequestType}
 	vMemRequestTemplateComm                 = &proto.TemplateCommodity{CommodityType: &vMemRequestType}
-	cpuAllocationTemplateCommWithKey        = &proto.TemplateCommodity{Key: &fakeKey, CommodityType: &cpuAllocationType}
-	memAllocationTemplateCommWithKey        = &proto.TemplateCommodity{Key: &fakeKey, CommodityType: &memAllocationType}
-	cpuRequestAllocationTemplateCommWithKey = &proto.TemplateCommodity{Key: &fakeKey, CommodityType: &cpuRequestAllocationType}
-	memRequestAllocationTemplateCommWithKey = &proto.TemplateCommodity{Key: &fakeKey, CommodityType: &memRequestAllocationType}
+	cpuAllocationTemplateCommWithKey        = &proto.TemplateCommodity{Key: &fakeKey, CommodityType: &cpuQuotaType}
+	memAllocationTemplateCommWithKey        = &proto.TemplateCommodity{Key: &fakeKey, CommodityType: &memQuotaType}
+	cpuRequestAllocationTemplateCommWithKey = &proto.TemplateCommodity{Key: &fakeKey, CommodityType: &cpuRequestQuotaType}
+	memRequestAllocationTemplateCommWithKey = &proto.TemplateCommodity{Key: &fakeKey, CommodityType: &memRequestQuotaType}
 	vmpmAccessTemplateComm                  = &proto.TemplateCommodity{Key: &fakeKey, CommodityType: &vmPMAccessType}
 	applicationTemplateComm                 = &proto.TemplateCommodity{Key: &fakeKey, CommodityType: &appCommType}
 	transactionTemplateComm                 = &proto.TemplateCommodity{Key: &fakeKey, CommodityType: &transactionType}
@@ -150,10 +150,10 @@ func (f *SupplyChainFactory) buildQuotaSupplyBuilder() (*proto.TemplateDTO, erro
 	// Link from Quota to VM
 	vmQuotaExtLinkBuilder := supplychain.NewExternalEntityLinkBuilder()
 	vmQuotaExtLinkBuilder.Link(proto.EntityDTO_VIRTUAL_DATACENTER, proto.EntityDTO_VIRTUAL_MACHINE, proto.Provider_LAYERED_OVER).
-		Commodity(cpuAllocationType, true).
-		Commodity(memAllocationType, true).
-		Commodity(cpuRequestAllocationType, true).
-		Commodity(memRequestAllocationType, true)
+		Commodity(cpuQuotaType, true).
+		Commodity(memQuotaType, true).
+		Commodity(cpuRequestQuotaType, true).
+		Commodity(memRequestQuotaType, true)
 
 	err := f.addVMStitchingProperty(vmQuotaExtLinkBuilder)
 	if err != nil {

@@ -215,10 +215,10 @@ func (s *StitchingManager) GenerateReconciliationMetaData() (*proto.EntityDTO_Re
 		PatchSellingWithProperty(proto.CommodityDTO_VMEM, usedAndCapacityPropertyNames).
 		PatchSellingWithProperty(proto.CommodityDTO_VCPU_REQUEST, usedAndCapacityPropertyNames).
 		PatchSellingWithProperty(proto.CommodityDTO_VMEM_REQUEST, usedAndCapacityPropertyNames).
-		PatchSellingWithProperty(proto.CommodityDTO_CPU_ALLOCATION, usedAndCapacityPropertyNames).
-		PatchSellingWithProperty(proto.CommodityDTO_MEM_ALLOCATION, usedAndCapacityPropertyNames).
-		PatchSellingWithProperty(proto.CommodityDTO_CPU_REQUEST_ALLOCATION, usedAndCapacityPropertyNames).
-		PatchSellingWithProperty(proto.CommodityDTO_MEM_REQUEST_ALLOCATION, usedAndCapacityPropertyNames)
+		PatchSellingWithProperty(proto.CommodityDTO_VCPU_QUOTA, usedAndCapacityPropertyNames).
+		PatchSellingWithProperty(proto.CommodityDTO_VMEM_QUOTA, usedAndCapacityPropertyNames).
+		PatchSellingWithProperty(proto.CommodityDTO_VCPU_REQUEST_QUOTA, usedAndCapacityPropertyNames).
+		PatchSellingWithProperty(proto.CommodityDTO_VMEM_REQUEST_QUOTA, usedAndCapacityPropertyNames)
 	meta := replacementEntityMetaDataBuilder.Build()
 	return meta, nil
 }

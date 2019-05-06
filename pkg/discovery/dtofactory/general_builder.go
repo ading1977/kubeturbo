@@ -18,13 +18,13 @@ var (
 		metrics.Memory:             proto.CommodityDTO_VMEM,
 		metrics.CPURequest:         proto.CommodityDTO_VCPU_REQUEST,
 		metrics.MemoryRequest:      proto.CommodityDTO_VMEM_REQUEST,
+		metrics.CPUQuota:           proto.CommodityDTO_VCPU_QUOTA,
+		metrics.MemoryQuota:        proto.CommodityDTO_VMEM_QUOTA,
+		metrics.CPURequestQuota:    proto.CommodityDTO_VCPU_REQUEST_QUOTA,
+		metrics.MemoryRequestQuota: proto.CommodityDTO_VMEM_REQUEST_QUOTA,
+		metrics.Transaction:        proto.CommodityDTO_TRANSACTION,
 		metrics.CPUProvisioned:     proto.CommodityDTO_CPU_PROVISIONED,
 		metrics.MemoryProvisioned:  proto.CommodityDTO_MEM_PROVISIONED,
-		metrics.Transaction:        proto.CommodityDTO_TRANSACTION,
-		metrics.CPUQuota:           proto.CommodityDTO_CPU_ALLOCATION,
-		metrics.MemoryQuota:        proto.CommodityDTO_MEM_ALLOCATION,
-		metrics.CPURequestQuota:    proto.CommodityDTO_CPU_REQUEST_ALLOCATION,
-		metrics.MemoryRequestQuota: proto.CommodityDTO_MEM_REQUEST_ALLOCATION,
 	}
 )
 
