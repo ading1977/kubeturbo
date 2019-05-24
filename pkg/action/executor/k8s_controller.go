@@ -1,6 +1,7 @@
 package executor
 
 import (
+	"github.com/golang/glog"
 	apiappsv1beta1 "k8s.io/api/apps/v1beta1"
 	apicorev1 "k8s.io/api/core/v1"
 	apiextv1beta1 "k8s.io/api/extensions/v1beta1"
@@ -17,15 +18,17 @@ import (
 // - Deployment
 type k8sController interface {
 	get(name string) (*k8sControllerSpec, error)
-	update() error
+	update(spec *k8sControllerSpec) error
 }
 
 // k8sControllerSpec defines a set of objects that we want to update:
 // - replicas: The replicas of a controller to update for horizontal scale
-// Note: Use pointer for in-place update
+// - podSpec: The pod specification of a controller to update for resize
 type k8sControllerSpec struct {
-	replicas *int32
-	podSpec  *apicorev1.PodSpec
+	replicas int32
+	podSpec  apicorev1.PodSpec
+	isResize bool
+	updated  bool
 }
 
 // ReplicationController
@@ -42,13 +45,23 @@ func (rc *replicationController) get(name string) (*k8sControllerSpec, error) {
 		return nil, err
 	}
 	return &k8sControllerSpec{
-		replicas: rc.rc.Spec.Replicas,
-		podSpec:  &rc.rc.Spec.Template.Spec,
+		replicas: *rc.rc.Spec.Replicas,
+		podSpec:  rc.rc.Spec.Template.Spec,
 	}, nil
 }
 
-func (rc *replicationController) update() error {
-	_, err := rc.client.Update(rc.rc)
+func (rc *replicationController) update(spec *k8sControllerSpec) error {
+	var err error
+	if spec.isResize {
+		glog.V(2).Infof("Scaling down replica of ReplicaController to 0")
+		*rc.rc.Spec.Replicas = 0
+		if rc.rc, err = rc.client.Update(rc.rc); err != nil {
+			return err
+		}
+	}
+	*rc.rc.Spec.Replicas = spec.replicas
+	rc.rc.Spec.Template.Spec = spec.podSpec
+	_, err = rc.client.Update(rc.rc)
 	return err
 }
 
@@ -70,13 +83,23 @@ func (rs *replicaSet) get(name string) (*k8sControllerSpec, error) {
 		return nil, err
 	}
 	return &k8sControllerSpec{
-		replicas: rs.rs.Spec.Replicas,
-		podSpec:  &rs.rs.Spec.Template.Spec,
+		replicas: *rs.rs.Spec.Replicas,
+		podSpec:  rs.rs.Spec.Template.Spec,
 	}, nil
 }
 
-func (rs *replicaSet) update() error {
-	_, err := rs.client.Update(rs.rs)
+func (rs *replicaSet) update(spec *k8sControllerSpec) error {
+	var err error
+	if spec.isResize {
+		glog.V(2).Infof("Scaling down replicas of ReplicaSet to 0")
+		*rs.rs.Spec.Replicas = 0
+		if rs.rs, err = rs.client.Update(rs.rs); err != nil {
+			return err
+		}
+	}
+	*rs.rs.Spec.Replicas = spec.replicas
+	rs.rs.Spec.Template.Spec = spec.podSpec
+	_, err = rs.client.Update(rs.rs)
 	return err
 }
 
@@ -98,12 +121,14 @@ func (dep *deployment) get(name string) (*k8sControllerSpec, error) {
 		return nil, err
 	}
 	return &k8sControllerSpec{
-		replicas: dep.dep.Spec.Replicas,
-		podSpec:  &dep.dep.Spec.Template.Spec,
+		replicas: *dep.dep.Spec.Replicas,
+		podSpec:  dep.dep.Spec.Template.Spec,
 	}, nil
 }
 
-func (dep *deployment) update() error {
+func (dep *deployment) update(spec *k8sControllerSpec) error {
+	*dep.dep.Spec.Replicas = spec.replicas
+	dep.dep.Spec.Template.Spec = spec.podSpec
 	_, err := dep.client.Update(dep.dep)
 	return err
 }

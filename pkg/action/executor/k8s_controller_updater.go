@@ -71,20 +71,20 @@ func (c *k8sControllerUpdater) updateWithRetry(spec *controllerSpec) error {
 func (c *k8sControllerUpdater) update(desired *controllerSpec) error {
 	glog.V(4).Infof("Begin to update %v of pod %s/%s",
 		c.controller, c.namespace, c.podName)
-	current, err := c.controller.get(c.name)
+	currentSpec, err := c.controller.get(c.name)
 	if err != nil {
 		return err
 	}
-	updated, err := c.reconcile(current, desired)
+	newSpec, err := c.reconcile(currentSpec, desired)
 	if err != nil {
 		return err
 	}
-	if !updated {
+	if !newSpec.updated {
 		glog.V(2).Infof("%v of pod %s/%s has already been updated to the desired specification",
 			c.controller, c.namespace, c.podName)
 		return nil
 	}
-	if err := c.controller.update(); err != nil {
+	if err := c.controller.update(newSpec); err != nil {
 		return err
 	}
 	glog.V(2).Infof("Successfully updated %v of pod %s/%s",
@@ -92,29 +92,32 @@ func (c *k8sControllerUpdater) update(desired *controllerSpec) error {
 	return nil
 }
 
-func (c *k8sControllerUpdater) reconcile(current *k8sControllerSpec, desired *controllerSpec) (bool, error) {
+func (c *k8sControllerUpdater) reconcile(current *k8sControllerSpec, desired *controllerSpec) (*k8sControllerSpec, error) {
 	if desired.replicasDiff != 0 {
 		// This is a horizontal scale
 		// We want to suspend the target pod or provision a new pod first
-		num, err := c.suspendOrProvision(*current.replicas, desired.replicasDiff)
+		num, err := c.suspendOrProvision(current.replicas, desired.replicasDiff)
 		if err != nil {
-			return false, err
+			return current, err
 		}
 		// Update the replicas of the controller
 		glog.V(2).Infof("Try to update replicas of %v from %d to %d",
-			c.controller, *current.replicas, num)
-		*current.replicas = num
-		return true, nil
+			c.controller, current.replicas, num)
+		current.replicas = num
+		current.updated = true
+		return current, nil
 	}
 	// This may be a vertical scale
 	// Check and update resource limits/requests of the container in the pod specification
 	glog.V(4).Infof("Update container %v/%v-%v resources in the pod specification.",
 		c.namespace, c.podName, desired.resizeSpec.Index)
-	updated, err := updateResourceAmount(current.podSpec, desired.resizeSpec)
+	updated, err := updateResourceAmount(&current.podSpec, desired.resizeSpec)
 	if err != nil {
-		return false, err
+		return current, err
 	}
-	return updated, nil
+	current.isResize = true
+	current.updated = updated
+	return current, nil
 }
 
 // suspendOrProvision suspends or provisions the target pod and
