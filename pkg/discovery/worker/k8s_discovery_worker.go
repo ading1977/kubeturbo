@@ -78,7 +78,7 @@ type k8sDiscoveryWorker struct {
 func NewK8sDiscoveryWorker(config *k8sDiscoveryWorkerConfig, wid string) (*k8sDiscoveryWorker, error) {
 	// id := uuid.NewUUID().String()
 	if len(config.monitoringSourceConfigs) == 0 {
-		return nil, errors.New("No monitoring source config found in config.")
+		return nil, errors.New("no monitoring source config found in config")
 	}
 
 	// Build all the monitoring worker based on configs.
@@ -130,14 +130,14 @@ func (worker *k8sDiscoveryWorker) RegisterAndRun(dispatcher *Dispatcher, collect
 // Worker start to working on task.
 func (worker *k8sDiscoveryWorker) executeTask(currTask *task.Task) *task.TaskResult {
 	if currTask == nil {
-		err := errors.New("No task has been assigned to the current worker.")
+		err := errors.New("no task has been assigned to the current worker")
 		glog.Errorf("%s", err)
 		return task.NewTaskResult(worker.id, task.TaskFailed).WithErr(err)
 	}
 
 	if glog.V(4) {
 		for _, node := range currTask.NodeList() {
-			glog.Infof("%s : Node %s with %d pods\n", worker.id, node.Name, len(currTask.PodList()))
+			glog.Infof("%s : Node %s with %d pods", worker.id, node.Name, len(currTask.PodList()))
 		}
 	}
 	// wait group to make sure metrics scraping finishes.

@@ -9,12 +9,14 @@ import (
 
 type ClusterMonitorConfig struct {
 	clusterInfoScraper *cluster.ClusterScraper
+	targetIdentifier   string
 }
 
-func NewClusterMonitorConfig(kclient *kubernetes.Clientset) *ClusterMonitorConfig {
+func NewClusterMonitorConfig(kclient *kubernetes.Clientset, targetIdentifier string) *ClusterMonitorConfig {
 	k8sClusterScraper := cluster.NewClusterScraper(kclient)
 	return &ClusterMonitorConfig{
 		clusterInfoScraper: k8sClusterScraper,
+		targetIdentifier:   targetIdentifier,
 	}
 }
 

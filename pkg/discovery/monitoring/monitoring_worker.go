@@ -45,11 +45,11 @@ func BuildMonitorWorker(source types.MonitoringSource, config MonitorWorkerConfi
 	case types.ClusterSource:
 		clusterMonitorConfig, ok := config.(*master.ClusterMonitorConfig)
 		if !ok {
-			return nil, errors.New("Failed to build a cluster monitoring client as the provided config was not a ClusterMonitorConfig")
+			return nil, errors.New("failed to build a cluster monitoring client as the provided config was not a ClusterMonitorConfig")
 		}
 		return master.NewClusterMonitor(clusterMonitorConfig)
 	default:
-		return nil, fmt.Errorf("Unsupported monitoring source %s", source)
+		return nil, fmt.Errorf("unsupported monitoring source %s", source)
 	}
 
 }

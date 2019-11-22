@@ -11,13 +11,11 @@ require (
 	github.com/gogo/protobuf v0.0.0-20180925083612-61dbc136cf5d // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/golang/groupcache v0.0.0-20160516000752-02826c3e7903 // indirect
-	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/google/btree v1.0.0 // indirect
 	github.com/google/cadvisor v0.0.0-20180926223621-e7c0798314d1
 	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/google/gofuzz v0.0.0-20170612174753-24818f796faf // indirect
 	github.com/googleapis/gnostic v0.0.0-20180520015035-48a0ecefe2e4 // indirect
-	github.com/gorilla/websocket v0.0.0-20180924232612-3130e8d3f198 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190212212710-3befbb6ad0cc // indirect
 	github.com/imdario/mergo v0.3.6 // indirect
 	github.com/json-iterator/go v0.0.0-20180914014843-2433035e5132 // indirect
@@ -35,7 +33,6 @@ require (
 	github.com/sirupsen/logrus v1.2.0 // indirect
 	github.com/spf13/pflag v1.0.3
 	github.com/stretchr/testify v1.2.2
-	github.com/turbonomic/turbo-api v0.0.0-20180816193551-ed948ba97e70 // indirect
 	github.com/turbonomic/turbo-go-sdk v6.4.1-0.20191120011039-887da256d38c+incompatible
 	go.uber.org/atomic v0.0.0-20181018215023-8dc6146f7569 // indirect
 	go.uber.org/multierr v0.0.0-20180122172545-ddea229ff1df // indirect
@@ -61,3 +58,5 @@ require (
 	sigs.k8s.io/testing_frameworks v0.1.1 // indirect
 	sigs.k8s.io/yaml v1.1.0 // indirect
 )
+
+replace github.com/turbonomic/turbo-go-sdk => ../turbo-go-sdk

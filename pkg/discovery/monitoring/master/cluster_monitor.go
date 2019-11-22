@@ -78,7 +78,7 @@ func (m *ClusterMonitor) RetrieveClusterStat() error {
 	defer close(m.stopCh)
 
 	if m.nodeList == nil {
-		return errors.New("Invalid nodeList or empty nodeList. Nothing to monitor")
+		return errors.New("invalid nodeList or empty nodeList. Nothing to monitor")
 	}
 	select {
 	case <-m.stopCh:
@@ -86,7 +86,7 @@ func (m *ClusterMonitor) RetrieveClusterStat() error {
 	default:
 		err := m.findClusterID()
 		if err != nil {
-			return fmt.Errorf("Failed to find cluster ID based on Kubernetes service: %v", err)
+			return fmt.Errorf("failed to find cluster ID based on Kubernetes service: %v", err)
 		}
 		select {
 		case <-m.stopCh:
@@ -114,7 +114,8 @@ func (m *ClusterMonitor) findClusterID() error {
 		return err
 	}
 	// TODO use a constant for cluster commodity key.
-	clusterInfo := metrics.NewEntityStateMetric(metrics.ClusterType, "", metrics.Cluster, kubernetesSvcID)
+	clusterCommKey := kubernetesSvcID + "::" + m.config.targetIdentifier
+	clusterInfo := metrics.NewEntityStateMetric(metrics.ClusterType, "", metrics.Cluster, clusterCommKey)
 	m.sink.AddNewMetricEntries(clusterInfo)
 	return nil
 }

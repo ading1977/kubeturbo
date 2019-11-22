@@ -85,7 +85,8 @@ func createProbeConfigOrDie(c *Config) *configs.ProbeConfig {
 	kubeletMonitoringConfig := kubelet.NewKubeletMonitorConfig(c.KubeletClient)
 
 	// Create cluster monitoring
-	masterMonitoringConfig := master.NewClusterMonitorConfig(c.Client)
+	masterMonitoringConfig := master.NewClusterMonitorConfig(
+		c.Client, c.tapSpec.TargetIdentifier)
 
 	// TODO for now kubelet is the only monitoring source. As we have more sources, we should choose what to be added into the slice here.
 	monitoringConfigs := []monitoring.MonitorWorkerConfig{
