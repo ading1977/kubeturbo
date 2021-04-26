@@ -1,7 +1,7 @@
 apiVersion: charts.helm.k8s.io/v1
 kind: Kubeturbo
 metadata:
-  name: kubeturbo-release
+  name: kubeturbo-meng
 spec:
   # Default values copied from <project_dir>/helm-charts/kubeturbo/values.yaml
   
@@ -11,15 +11,21 @@ spec:
 
   # Turbo server version and address
   serverMeta:
-    version: "8.0"
-    turboServer: https://Turbo_server_URL
+    version: "8.1.6"
+    turboServer: https://35.174.206.243:9403
 
   # Turbo server api user and password stored in a secret or optionally specified as username and password
   # The opsManagerUserName requires Turbo administrator role
-  #restAPIConfig:
+  restAPIConfig:
     #turbonomicCredentialsSecretName: "turbonomic-credentials"
-    #opsManagerUserName: Turbo_username
-    #opsManagerPassword: Turbo_password
+    opsManagerUserName: administrator
+    opsManagerPassword: a
+
+  roleBinding: "kubeturbo-meng-binding"
+  serviceAccountName: "kubeturbo-meng"
+
+  targetConfig:
+    targetName: ocp-wdc02
 
   # Uncomment out lines to configure HA Node to ESX policies by node role. Default is master
   # Add more roles using format "\"foo\"\,\"bar\""
